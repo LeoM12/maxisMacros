@@ -1,0 +1,84 @@
+Sub insertImages()
+
+    'This Word macro is intended to be used together with / after the macro "insertReference".
+    'The reference macro writes a string containing an auto-sequential number and another custom user-given number.
+    'This macro asks for a path which it should import the images from. 
+    'You can then choose if you want the images to be imported in your current document or in a new document, which will then be created.
+    'Afterwards it scans the CURRENT document for these reference-strings, extracts the user-given number and imports the matching image and creates a headline for the image.
+    'The image will be imported from your selected folder and with the filename "DSC_" + user-given number + ".jpg".
+    
+    Dim doc As Document
+    Set doc = Application.ActiveDocument
+    
+    Dim filename As String
+    Dim oField As Field
+    
+    Dim endOfDoc As range
+    Dim img As Word.InlineShape
+    
+    Dim folderPath As String
+    Dim fileExplorer As FileDialog
+    Set fileExplorer = Application.FileDialog(msoFileDialogFolderPicker)
+    fileExplorer.AllowMultiSelect = False
+    Dim filePath As String
+    
+    Dim amountNotFound As Integer
+
+    With fileExplorer
+        If .Show = -1 Then
+            folderPath = .SelectedItems.Item(1)
+        End If
+    End With
+    
+    Dim newDocAnswer As Integer
+    Dim fieldIndex As Integer
+    Dim newApplication As Word.Application
+    Dim importDoc As Document
+    Set importDoc = Application.ActiveDocument
+    
+    
+    If folderPath <> "" Then
+        newDocAnswer = msgBox("Do you want to import the images into a new document?", vbQuestion + vbYesNo + vbDefaultButton2, "Import Settings")
+            If newDocAnswer = vbYes Then
+                Set newApplication = New Word.Application
+                With newApplication
+                    .Visible = True
+                    .Activate
+                    .Documents.Add
+                End With
+                Set importDoc = newApplication.ActiveDocument
+            End If
+                For Each oField In doc.Fields
+                    If oField.Code = " SEQ imgReference \n " Then
+                        fieldIndex = fieldIndex + 1
+                        oField.Select
+                        Selection.Next(Unit:=wdWord, Count:=2).Select
+                        filename = Selection.Text
+                        Set endOfDoc = importDoc.Content
+                        filePath = folderPath & "\DSC_" & filename & ".jpg"
+                        'Checks if img exists
+                        If Dir(filePath) <> "" Then
+                            With endOfDoc
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertBreak Type:=wdLineBreak
+                                .InsertBreak Type:=wdLineBreak
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertAfter "(Foto " & fieldIndex & " / " & filename & "):"
+                                .ParagraphFormat.Alignment = wdAlignParagraphRight
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertBreak Type:=wdLineBreak
+                                Set img = importDoc.Content.InlineShapes.AddPicture(filename:=filePath, LinkToFile:=False, SaveWithDocument:=True, range:=endOfDoc)
+                            End With
+                        Else
+                            Selection.Font.ColorIndex = wdRed
+                            amountNotFound = amountNotFound + 1
+                        End If
+                    End If
+                Next
+                If amountNotFound = 1 Then
+                    msgBox Prompt:="1 image wasn't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
+                ElseIf amountNotFound > 1 Then
+                    msgBox Prompt:=amountNotFound & " images weren't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
+                End If
+    End If
+End Sub
