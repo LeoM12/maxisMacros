@@ -1,0 +1,28 @@
+Sub insertReference()
+		'This macro takes a user given number (which later will stand for the filename of an image) and inserts a auto numerated string with the given number.
+		'Example for a possible string: "(siehe Foto 1 / 5435)".
+		'In combination with another macro called "insertImages" this string will let the 2nd macro import an image with the filename "DSC_5435.jpg".
+    Dim imgFilename As String
+    Dim i As Integer
+    
+    Do While imgFilename = ""
+        imgFilename = InputBox("Enter Filename of image (without Ending)", "Filename of Image")
+        'If user cancels the action
+        If StrPtr(imgFilename) = 0 Then
+            Exit Sub
+        ElseIf imgFilename = "" Then
+            msgBox "Please type the filename of the image you want to reference.", vbOKOnly, "Invalid filename"
+        End If
+    Loop
+        Selection.InsertAfter Text:=" (siehe Foto "
+        Selection.Font.Italic = True
+        Selection.Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+        ActiveDocument.Fields.Add range:=Selection.range, Type:=wdFieldEmpty, Text:="SEQ imgReference \n", PreserveFormatting:=False
+        Selection.InsertAfter Text:=" / " & imgFilename & ") "
+        Selection.Font.Italic = True
+        
+        Selection.Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+    Debug.Print Selection.Start
+    
+    ActiveDocument.Fields.Update
+End Sub
