@@ -82,7 +82,7 @@ Sub insertImages()
                         End If
                     End If
                 Next
-                msgBox Prompt:="Succesfully imported " & imgCounter & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
+                msgBox Prompt:="Succesfully imported " & imgCounter-1 & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
                 If amountNotFound = 1 Then
                     msgBox Prompt:="1 image wasn't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
                 ElseIf amountNotFound > 1 Then
