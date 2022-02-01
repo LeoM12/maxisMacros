@@ -1,5 +1,13 @@
 Sub insertImages()
 
+    'This Word macro is intended to be used together with / after the macro "insertReference".
+    'The reference macro writes a string containing an auto-sequential number and another custom user-given number.
+    'This macro asks for a path which it should import the images from.
+    'You can then choose if you want the images to be imported in your current document or in a new document, which will then be created.
+    'Afterwards it scans the CURRENT document for these reference-strings, extracts the user-given number and imports the matching image and creates a headline for the image.
+    'The image will be imported from your selected folder and with the filename "DSC_" + user-given number + ".jpg".
+
+
     Dim doc As Document
     Set doc = Application.ActiveDocument
     
@@ -57,7 +65,7 @@ Sub insertImages()
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertBreak Type:=wdLineBreak
                                 .InsertBreak Type:=wdLineBreak
-                                If (imgCounter Mod 2) = 0 Then
+                                If (imgCounter Mod 2) = 1 Then
                                     .InsertBreak Type:=wdLineBreak
                                 End If
                                 imgCounter = imgCounter + 1
