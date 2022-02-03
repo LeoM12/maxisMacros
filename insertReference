@@ -18,9 +18,12 @@ Sub insertReference()
         Selection.Font.Italic = True
         Selection.Collapse (Word.WdCollapseDirection.wdCollapseEnd)
         ActiveDocument.Fields.Add range:=Selection.range, Type:=wdFieldEmpty, Text:="SEQ imgReference \n", PreserveFormatting:=False
-        Selection.InsertAfter Text:=" / " & imgFilename & ") "
+        Selection.InsertAfter Text:=" / " & imgFilename & ")"
         Selection.Font.Italic = True
+        Selection.Collapse (Word.WdCollapseDirection.wdCollapseEnd)
         
+        Selection.InsertAfter Text:=" "
+        Selection.Font.Italic = False
         Selection.Collapse (Word.WdCollapseDirection.wdCollapseEnd)
     Debug.Print Selection.Start
     
