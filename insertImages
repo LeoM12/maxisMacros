@@ -38,10 +38,16 @@ Sub insertImages()
     Set importDoc = Application.ActiveDocument
     Dim imgCounter As Integer
     imgCounter = 1
+    Dim selSize As String
     
     
     If folderPath <> "" Then
         newDocAnswer = msgBox("Do you want to import the images into a new document?", vbQuestion + vbYesNo + vbDefaultButton2, "Import Settings")
+        imgSizeSelector.Show
+        selSize = imgSizeSelector.selectedSize
+        If selSize = "" Then
+            End
+        End If
             If newDocAnswer = vbYes Then
                 Set newApplication = New Word.Application
                 With newApplication
@@ -75,6 +81,13 @@ Sub insertImages()
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertBreak Type:=wdLineBreak
                                 Set img = importDoc.Content.InlineShapes.AddPicture(filename:=filePath, LinkToFile:=False, SaveWithDocument:=True, range:=endOfDoc)
+                                If selSize = "13 cm x 9 cm" Then
+                                    img.Width = CentimetersToPoints(13)
+                                    img.Height = CentimetersToPoints(9)
+                                ElseIf selSize <> "KYRIAKOS" Then
+                                    img.Width = CentimetersToPoints(CSng(selSize))
+                                    img.Height = CentimetersToPoints(CSng(selSize * 0.69231))
+                                End If
                             End With
                         Else
                             Selection.Font.ColorIndex = wdRed
@@ -82,7 +95,7 @@ Sub insertImages()
                         End If
                     End If
                 Next
-                msgBox Prompt:="Succesfully imported " & imgCounter-1 & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
+                msgBox Prompt:="Succesfully imported " & imgCounter - 1 & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
                 If amountNotFound = 1 Then
                     msgBox Prompt:="1 image wasn't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
                 ElseIf amountNotFound > 1 Then
