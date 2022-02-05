@@ -72,7 +72,7 @@ Sub insertImages()
                                 .InsertBreak Type:=wdLineBreak
                                 .InsertBreak Type:=wdLineBreak
                                 If (imgCounter Mod 2) = 1 Then
-                                    .InsertBreak Type:=wdLineBreak
+                                    .InsertBreak Type:=wdPageBreak
                                 End If
                                 imgCounter = imgCounter + 1
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
