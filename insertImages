@@ -67,16 +67,19 @@ Sub insertImages()
                         filePath = folderPath & "\DSC_" & filename & ".jpg"
                         'Checks if img exists
                         If Dir(filePath) <> "" Then
+                            Selection.Font.ColorIndex = wdBlack
                             With endOfDoc
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertBreak Type:=wdLineBreak
-                                .InsertBreak Type:=wdLineBreak
                                 If (imgCounter Mod 2) = 1 Then
+                                    .InsertBreak Type:=wdPageBreak
+                                Else
                                     .InsertBreak Type:=wdLineBreak
                                 End If
                                 imgCounter = imgCounter + 1
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
-                                .InsertAfter "Foto " & fieldIndex & " / " & filename & ":"
+                                .InsertAfter ("Foto " & fieldIndex & " / " & filename & ":")
+                                .Font.size = 11
                                 .ParagraphFormat.Alignment = wdAlignParagraphRight
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertBreak Type:=wdLineBreak
