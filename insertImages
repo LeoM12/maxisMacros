@@ -75,10 +75,11 @@ Sub insertImages()
                                     .InsertBreak Type:=wdPageBreak
                                 Else
                                     .InsertBreak Type:=wdLineBreak
+                                    .InsertBreak Type:=wdLineBreak
                                 End If
                                 imgCounter = imgCounter + 1
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
-                                .InsertAfter ("Foto " & fieldIndex & " / " & filename & ":")
+                                .InsertAfter ("Foto " & fieldIndex & " / " & filename)
                                 .Font.size = 11
                                 .ParagraphFormat.Alignment = wdAlignParagraphRight
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
