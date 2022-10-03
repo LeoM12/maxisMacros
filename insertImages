@@ -49,13 +49,13 @@ Sub insertImages()
             End
         End If
             If newDocAnswer = vbYes Then
-                Set newApplication = New Word.Application
-                With newApplication
-                    .Visible = True
-                    .Activate
-                    .Documents.Add
-                End With
-                Set importDoc = newApplication.ActiveDocument
+                'Set newApplication = New Word.Application
+                'With newApplication
+                 '   .Visible = True
+                  '  .Activate
+                   ' .Documents.Add
+                'End With
+                Set importDoc = Documents.Add
             End If
                 For Each oField In doc.Fields
                     If oField.Code = " SEQ imgReference \n " Then
