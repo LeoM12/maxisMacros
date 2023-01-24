@@ -1,3 +1,4 @@
+
 Sub insertImages()
 
     'This Word macro is intended to be used together with / after the macro "insertReference".
@@ -14,8 +15,8 @@ Sub insertImages()
     Dim filename As String
     Dim oField As Field
     
-    Dim endOfDoc As range
-    Dim img As Word.InlineShape
+    Dim endOfDoc As Range
+    Dim img As Word.inlineShape
     
     Dim folderPath As String
     Dim fileExplorer As FileDialog
@@ -42,7 +43,7 @@ Sub insertImages()
     
     
     If folderPath <> "" Then
-        newDocAnswer = msgBox("Do you want to import the images into a new document?", vbQuestion + vbYesNo + vbDefaultButton2, "Import Settings")
+        newDocAnswer = MsgBox("Do you want to import the images into a new document?", vbQuestion + vbYesNo + vbDefaultButton2, "Import Settings")
         imgSizeSelector.Show
         selSize = imgSizeSelector.selectedSize
         If selSize = "" Then
@@ -65,6 +66,7 @@ Sub insertImages()
                         filename = Selection.Text
                         Set endOfDoc = importDoc.Content
                         filePath = folderPath & "\DSC_" & filename & ".jpg"
+                        filePath2 = folderPath & "\DRO_" & filename & ".jpeg"
                         'Checks if img exists
                         If Dir(filePath) <> "" Then
                             Selection.Font.ColorIndex = wdBlack
@@ -80,11 +82,11 @@ Sub insertImages()
                                 imgCounter = imgCounter + 1
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertAfter ("Foto " & fieldIndex & " / " & filename)
-                                .Font.size = 11
+                                .Font.Size = 12
                                 .ParagraphFormat.Alignment = wdAlignParagraphRight
                                 .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
                                 .InsertBreak Type:=wdLineBreak
-                                Set img = importDoc.Content.InlineShapes.AddPicture(filename:=filePath, LinkToFile:=False, SaveWithDocument:=True, range:=endOfDoc)
+                                Set img = importDoc.Content.InlineShapes.AddPicture(filename:=filePath, LinkToFile:=False, SaveWithDocument:=True, Range:=endOfDoc)
                                 If selSize = "13 cm x 9 cm" Then
                                     img.Width = CentimetersToPoints(13)
                                     img.Height = CentimetersToPoints(9)
@@ -93,17 +95,47 @@ Sub insertImages()
                                     img.Height = CentimetersToPoints(CSng(selSize * 0.69231))
                                 End If
                             End With
+                            
+                      'New: insert images when filetype is jpeg instead of jpg
+                        ElseIf Dir(filePath2) <> "" Then
+                            Selection.Font.ColorIndex = wdBlack
+                            With endOfDoc
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertBreak Type:=wdLineBreak
+                                If (imgCounter Mod 2) = 1 Then
+                                    .InsertBreak Type:=wdPageBreak
+                                Else
+                                    .InsertBreak Type:=wdLineBreak
+                                    .InsertBreak Type:=wdLineBreak
+                                End If
+                                imgCounter = imgCounter + 1
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertAfter ("Foto " & fieldIndex & " / " & filename)
+                                .Font.Size = 12
+                                .ParagraphFormat.Alignment = wdAlignParagraphRight
+                                .Collapse (Word.WdCollapseDirection.wdCollapseEnd)
+                                .InsertBreak Type:=wdLineBreak
+                                Set img = importDoc.Content.InlineShapes.AddPicture(filename:=filePath2, LinkToFile:=False, SaveWithDocument:=True, Range:=endOfDoc)
+                                If selSize = "13 cm x 9 cm" Then
+                                    img.Width = CentimetersToPoints(13)
+                                    img.Height = CentimetersToPoints(9)
+                                ElseIf selSize <> "KYRIAKOS" Then
+                                    img.Width = CentimetersToPoints(CSng(selSize))
+                                    img.Height = CentimetersToPoints(CSng(selSize * 0.69231))
+                                End If
+                            End With
+                        
                         Else
                             Selection.Font.ColorIndex = wdRed
                             amountNotFound = amountNotFound + 1
                         End If
                     End If
                 Next
-                msgBox Prompt:="Succesfully imported " & imgCounter - 1 & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
+                MsgBox Prompt:="Succesfully imported " & imgCounter - 1 & " images.", Buttons:=vbOKOnly, Title:="Succesfully imported images"
                 If amountNotFound = 1 Then
-                    msgBox Prompt:="1 image wasn't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
+                    MsgBox Prompt:="1 image wasn't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
                 ElseIf amountNotFound > 1 Then
-                    msgBox Prompt:=amountNotFound & " images weren't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
+                    MsgBox Prompt:=amountNotFound & " images weren't found in the given image-folder. Check the filename of all highlited numbers or change image-folder!", Buttons:=vbCritical, Title:="Warning: Not Found!"
                 End If
     End If
 End Sub
